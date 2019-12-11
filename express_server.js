@@ -41,7 +41,7 @@ app.get('/urls', (req, res) => {
   res.render('urls_index', templateVars);
 });
 
-//Shorten URL then redirect to page to view it
+//Shorten URL then add to database, redirect to page to view it
 app.post("/urls", (req, res) => {
   console.log(req.body.longURL);  // Log the POST request body to the console
   let shortURL = generateRandomString();
@@ -58,6 +58,15 @@ app.post("/urls/:shortURL/delete", (req, res) => {
   console.log('trying to delete ', req.params.shortURL);
   delete urlDatabase[tempDelete];
   res.redirect("/urls/");
+})
+
+//Edit long URL for specific short URL
+app.post("/urls/:shortURL", (req, res) => {
+  console.log('editing');
+  let shortURL = req.params.shortURL;
+  urlDatabase[shortURL] = req.body.longURL;
+  
+  res.redirect(`/urls/${shortURL}`);
 })
 
 app.get('/urls.json', (req, res) => {
