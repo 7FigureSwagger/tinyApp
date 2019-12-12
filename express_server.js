@@ -1,7 +1,9 @@
 const express = require('express');
 const app = express();
 const PORT = 8080; //default port
+const bodyParser = require('body-parser');
 
+app.use(bodyParser.urlencoded({ extended: true })) // this gives us req.body
 app.set('view engine', 'ejs');
 
 function generateRandomString() {
@@ -20,11 +22,12 @@ const urlDatabase = {
   '9sm5xK': 'http://www.google.com'
 };
 
-const bodyParser = require("body-parser");
-app.use(bodyParser.urlencoded({extended: true}));
-
 app.get('/', (req, res) => {
-  res.send('Hello!');
+  let templateVars = { urls: urlDatabase }; 
+  
+  
+  res.render('urls_index', templateVars);
+  // res.send('Hello!');
 });
 
 app.get("/u/:shortURL", (req, res) => {
@@ -37,9 +40,32 @@ app.get("/u/:shortURL", (req, res) => {
 
 //sends current database
 app.get('/urls', (req, res) => {
-  let templateVars = { urls: urlDatabase };
+  // // let temp = req.cookies["username"];
+  // if (req.cookies["username"]) {
+  //   let templateVars = { urls: urlDatabase, username: req.cookies["username"] };
+  // } else {
+  //   let templateVars = { urls: urlDatabase };
+  // }
+  // console.log(templateVars);
+  let templateVars = { urls: urlDatabase }; 
   res.render('urls_index', templateVars);
 });
+
+//redirect to index page after 'login'
+app.post('/index', (req, res) => {
+  // if (req.cookies["username"]) {
+  //   let templateVars = { urls: urlDatabase, username: req.body.username };
+  // } else {
+  //   let templateVars = { urls: urlDatabase };
+  // }
+  res.cookie('username', req.body.username);
+  let templateVars = { username: req.body.username }; 
+
+  console.log(templateVars.username);
+  res.redirect('urls', 200,  templateVars);
+});
+
+// app.post('/')
 
 //Shorten URL then add to database, redirect to page to view it
 app.post("/urls", (req, res) => {
@@ -82,6 +108,12 @@ app.get("/urls/:shortURL", (req, res) => {
   let shortURL = req.params.shortURL;
   let longURL = urlDatabase[shortURL];
   console.log(shortURL);
+  // if (req.cookies["username"]) {
+  //   let templateVars = { urls: urlDatabase, username: req.cookies["username"] };
+  // } else {
+  //   let templateVars = { urls: urlDatabase };
+  // }
+  // console.log(templateVars.username)
   let templateVars = { shortURL: shortURL, longURL: longURL };
   res.render("urls_show", templateVars);
 });
