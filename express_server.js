@@ -5,7 +5,7 @@ const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 
 app.use(cookieParser());
-app.use(bodyParser.urlencoded({ extended: true })) // this gives us req.body
+app.use(bodyParser.urlencoded({ extended: true })); // this gives us req.body
 app.set('view engine', 'ejs');
 
 function generateRandomString() {
@@ -13,16 +13,26 @@ function generateRandomString() {
   for (let i = 0; i <= 6; i++) {
     rando.push(Math.floor(Math.random() * 10));
   }
-
   rando = rando.join('');
-
   return rando;
-}
+};
+
+const findUserByEmail = function (email, users) {
+    for (const userID in users) {
+      if (users[userID].email === email) {
+        return users[userID];
+      }
+    }
+    return undefined;
+};
+
 
 const urlDatabase = {
   'b2xVn2': 'http://www.lighthouselabs.ca',
   '9sm5xK': 'http://www.google.com'
 };
+
+const users = {};
 
 const userData = {
   1: 'default'
@@ -31,12 +41,10 @@ const userData = {
 app.get('/', (req, res) => {
   let templateVars = { urls: urlDatabase, username: 'Anon' }; 
   res.render('urls_index', templateVars);
-  // res.send('Hello!');
 });
 
 // Redirect to url page after login
 app.post('/login', (req, res) => {
-
   res.cookie('username', req.body.username);
   let templateVars = { urls: urlDatabase};
   res.redirect('/urls', 200,  templateVars);
@@ -48,11 +56,31 @@ app.post('/logout', (req, res) => {
   res.redirect('/urls', 200, templateVars);
 })
 
+app.get('/user/login', (req, res) => {
+  res.render('user_regs'); 
+})
+
+// Registration page
+app.post('/register', (req, res) => {
+  let isUser = findUserByEmail(req.body.email, users);
+  if (!isUser) {
+    let userID = generateRandomString();
+    res.cookie('user_id', userID);
+    users[userID] = {
+      id: userID,
+      email: req.body.email,
+      password: req.body.password
+    };
+  } else {
+    res.send('Email already in use!');
+  }
+  res.redirect('urls');
+  console.log(users, req.body);
+})
+
 app.get("/u/:shortURL", (req, res) => {
-  // const longURL = ...
   let shortURL = req.params.shortURL;
   let longURL = urlDatabase[shortURL];
-  // let colon = ':';
 
   res.redirect(`${longURL}`);
 });
@@ -62,9 +90,6 @@ app.get('/urls', (req, res) => {
   let templateVars = { urls: urlDatabase, username: req.cookies['username'] }; 
   res.render('urls_index', templateVars);
 });
-
-//redirect to index page after 'login'
-
 
 //Shorten URL then add to database, redirect to page to view it
 app.post("/urls", (req, res) => {
@@ -100,17 +125,15 @@ app.post("/urls/:shortURL", (req, res) => {
   let shortURL = req.params.shortURL;
   urlDatabase[shortURL] = req.body.longURL;
 
-  // res.cookie('username', req.body.username);
   let templateVars = { username: req.cookies['username'] };
   res.redirect(`/urls/${shortURL}`, templateVars);
-})
+});
 
 app.get('/urls.json', (req, res) => {
   res.json(urlDatabase);
 });
 
 app.get("/urls/new", (req, res) => {
-  // res.cookie('username', req.body.username);
   console.log(req.body.username);
   let templateVars = {urls: urlDatabase, username: req.cookies['username']};
   res.render("urls_new", templateVars);
