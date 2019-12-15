@@ -1,3 +1,4 @@
+
 <header>
   <nav class="navbar navbar-expand-md navbar-dark bg-success">
     <a class="navbar-brand" href="/urls">TinyApp</a>
@@ -9,11 +10,16 @@
         <a class="nav-item nav-link" href="/urls">My URLs</a>
         <a class="nav-item nav-link" href="/urls/new">Create New URL</a>
       </div>
-      <form method="GET" action="/user/login">
-        <button type="submit">Login</button>
-      </form>
-      <p>
-      </p>
+      <% if(user){ %>
+        Welcome <%=user.email%>
+        <a href="/user/logout" class="btn btn-warning">Logout</a>
+        
+      <% } else { %>
+        <a href="/user/register" class="btn btn-warning">Register</a>
+        <a href="/user/login" class="btn btn-danger">Login</a>
+      <% } %>
+
+
     </div>
   </nav>
 </header>
