@@ -7,7 +7,7 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
 
-    <title>New ACC - TinyApp Example</title>
+    <title>Login - TinyApp Example</title>
   </head>
 
   <body>
@@ -15,13 +15,13 @@
     <%- include('partials/_header') %>
 
     <main style="margin: 1em;">
-      <h3>Create Account</h3>
-      <form class="form-inline" action="/user/register" method="POST">
+      <h3>Login</h3>
+      <form class="form-inline" action="/user/login" method="POST">
         <div class="form-group mb-2">
           <label for="email">Enter an Email:</label>
           <input class="form-control" type="email" name="email" placeholder="email" style="width: 300px; margin: 1em">
           <input class="form-control" type="password" name="password" placeholder="password" style="width: 300px; margin: 1em">
-          <button type="submit" class="btn btn-primary">Register</button>
+          <button type="submit" class="btn btn-primary">Login</button>
         </div>
       </form>
     </main>
@@ -30,4 +30,4 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
   </body>
-</html> 
+</html>
