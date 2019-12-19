@@ -3,13 +3,10 @@ const { findUserByEmail } = require('./helpers');
 const app = express();
 const PORT = 8080; //default port
 const bodyParser = require('body-parser');
-// const cookieParser = require('cookie-parser');
 const cookieSession = require('cookie-session');
-
 const bcrypt = require('bcrypt');
 
 const password = "purple-monkey-dinosaur"; // found in the req.params object
-// const hashedPassword = bcrypt.hashSync(password, 10);
 
 app.use(cookieSession({
   name: 'user_id',
@@ -61,20 +58,7 @@ const users = {
   }
 };
 
-// Redirect to url page after login
-// app.post('/login', (req, res) => {
-//   // let useremail= req.body.email;
-//   // res.cookie('username', users[]);
-
-
-
-//   let templateVars = { urls: urlDatabase, user: users[user]};
-//   res.redirect('/urls', 200,  templateVars);
-// });
-
 app.get('/', (req, res) => {
-  // let templateVars = { urls: urlDatabase, user: users }; 
-  // console.log(templateVars);
   res.redirect('/urls');
 });
 
@@ -97,8 +81,6 @@ app.get('/user/logout', (req, res) => {
   req.session = null;
   res.redirect('/urls', 200, templateVars);
 });
-
-// app.get('/user/register')
 
 app.get('/user/register', (req, res) => {
   let templateVars = { user: users };
@@ -124,14 +106,11 @@ app.get('/urls', (req, res) => {
   res.render('urls_index', templateVars);
 });
 
-
-
 app.get('/urls.json', (req, res) => {
   res.json(urlDatabase);
 });
 
 app.get("/urls/new", (req, res) => {
-  // console.log(req.session.user_id)
   let userID = req.session.user_id;
   let templateVars = {
     user_id: req.session.user_id,
@@ -142,7 +121,6 @@ app.get("/urls/new", (req, res) => {
   if(!userID){
     res.send("you must be signed in to create new url");
   } else {
-    // let templateVars = { urls: urlDatabase, user: users[req.session.user_id] };
     res.render("urls_new", templateVars);
   }
 });
@@ -150,9 +128,7 @@ app.get("/urls/new", (req, res) => {
 
 app.get("/urls/:shortURL", (req, res) => {
   let shortURL = req.params.shortURL;
-  let longURL = urlDatabase[shortURL].longURL;
-  // console.log(urlDatabase);
-  
+  let longURL = urlDatabase[shortURL].longURL;  
   let templateVars = { shortURL: shortURL, longURL: longURL, user: users };
   res.render("urls_show", templateVars);
 });
@@ -184,12 +160,8 @@ app.post('/user/register', (req, res) => {
     password: hashedPassword,
     id: generateRandomString()
   }
-  // console.log(req.body.password);
   users[newUser.id] = newUser;
-  // console.log('pword', hashedPassword);
-
-  req.session.user_id = ('user_id', newUser.id);
-  
+  req.session.user_id = ('user_id', newUser.id);  
   res.redirect('/user/login');
 });
 
